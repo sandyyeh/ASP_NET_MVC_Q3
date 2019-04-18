@@ -6,7 +6,7 @@
 
 ## 基本
 
-- 資料來源為 Product.Data 結果，請勿直接修改 Product.cs 這個檔案
+- 以 Product.Data 當作資料存取的來源，請勿直接修改 Product.cs 這個檔案
 
 - UI 樣式不拘，可以自己設計或使用其他 css framework
 
