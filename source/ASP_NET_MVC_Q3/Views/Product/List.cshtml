@@ -1,0 +1,40 @@
+﻿@model IEnumerable<ASP_NET_MVC_Q3.Data.Product>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>List</title>
+</head>
+<body>
+    <h2>List</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>ProductName</th>
+                <th>Locale</th>
+                <th>CreateDate</th>
+                <th>UpdateDate</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.Locale</td>
+                    <td>@item.CreateDate</td>
+                    <td>@item.UpdateDate</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>
