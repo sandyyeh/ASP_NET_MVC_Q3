@@ -2,7 +2,9 @@
 
 @{
     Layout = null;
+
 }
+
 
 <!DOCTYPE html>
 
@@ -10,31 +12,56 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>List</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/mobilecss")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jquerymobile")
 </head>
 <body>
     <h2>List</h2>
-    <table>
-        <thead>
+
+    @*<form action="/Product/Add/" method="post">
+            ProductName <input type="text" name="ProductName" id="ProductName">
+            Locale
+            @Html.DropDownList("items")
+
+
+            <button type="submit">Add New Product</button>
+        </form>*@
+    <p>
+        @Html.ActionLink("Create", "Create")
+    </p>
+
+    <table class="table table-bordered table-striped" border="1">
+
+        <thead class="bg-info">
             <tr>
                 <th>Id</th>
                 <th>ProductName</th>
                 <th>Locale</th>
                 <th>CreateDate</th>
-                <th>UpdateDate</th>
+                <th colspan>UpdateDate</th>
+                <th colspan="5"></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @if (Model != null)
             {
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.Name</td>
-                    <td>@item.Locale</td>
-                    <td>@item.CreateDate</td>
-                    <td>@item.UpdateDate</td>
-                </tr>
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@item.Locale</td>
+                        <td>@String.Format("{0:yyyy/MM/dd HH:mm:ss}", @item.CreateDate)</td>
+                        <td>@String.Format("{0:yyyy/MM/dd HH:mm:ss}", @item.UpdateDate)</td>                      
+                        <td>@Html.ActionLink("Edit", "Edit", new { id = item.Id, name = item.Name, locale = item.Locale, createDate = item.CreateDate, updateDate = item.UpdateDate }) </td>
+                        <td> @Html.ActionLink("Delete", "Delete", new { id = item.Id, name = item.Name, locale = item.Locale, createDate = item.CreateDate, updateDate = item.UpdateDate })</td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
 </body>
 </html>
+
