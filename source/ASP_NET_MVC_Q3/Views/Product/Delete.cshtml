@@ -35,7 +35,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.CreateDate)
+            @String.Format("{0:yyyy/MM/dd HH:mm:ss}", Model.CreateDate)
         </dd>
 
         <dt>
@@ -43,7 +43,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.UpdateDate)
+            @String.Format("{0:yyyy/MM/dd HH:mm:ss}", Model.UpdateDate)
         </dd>
 
     </dl>

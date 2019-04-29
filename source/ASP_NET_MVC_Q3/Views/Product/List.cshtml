@@ -24,8 +24,6 @@
             ProductName <input type="text" name="ProductName" id="ProductName">
             Locale
             @Html.DropDownList("items")
-
-
             <button type="submit">Add New Product</button>
         </form>*@
     <p>
@@ -55,8 +53,8 @@
                         <td>@item.Locale</td>
                         <td>@String.Format("{0:yyyy/MM/dd HH:mm:ss}", @item.CreateDate)</td>
                         <td>@String.Format("{0:yyyy/MM/dd HH:mm:ss}", @item.UpdateDate)</td>                      
-                        <td>@Html.ActionLink("Edit", "Edit", new { id = item.Id, name = item.Name, locale = item.Locale, createDate = item.CreateDate, updateDate = item.UpdateDate }) </td>
-                        <td> @Html.ActionLink("Delete", "Delete", new { id = item.Id, name = item.Name, locale = item.Locale, createDate = item.CreateDate, updateDate = item.UpdateDate })</td>
+                        <td>@Html.ActionLink("Edit", "Edit", new { id = item.Id }) </td>
+                        <td> @Html.ActionLink("Delete", "Delete", new { id = item.Id })</td>
                     </tr>
                 }
             }

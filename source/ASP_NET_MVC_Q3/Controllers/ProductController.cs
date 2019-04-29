@@ -11,7 +11,7 @@ namespace ASP_NET_MVC_Q3.Controllers
 {
     public class ProductController : Controller
     {
-        public static int num;
+      //  public static int num;
         public static int result;
 
         List<Product> source = Product.Data;
@@ -53,7 +53,7 @@ namespace ASP_NET_MVC_Q3.Controllers
 
         public ActionResult Index()
         {
-
+            result = source[source.Count - 1].Id;
             return View();
         }
 
@@ -77,9 +77,7 @@ namespace ASP_NET_MVC_Q3.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Product product)
         {
-
-            num = result + 1;
-            compare(num);
+            result++;
 
             Product model = new Product();
             if (ModelState.IsValid)
@@ -88,16 +86,8 @@ namespace ASP_NET_MVC_Q3.Controllers
                 model.Name = product.Name;
                 model.Locale = product.Locale;
 
-                if (product.Name == null)
-                { ModelState.AddModelError("Name", "please enter"); }
-                if (string.IsNullOrEmpty(model.Locale))
-                { ModelState.AddModelError("Locale", "please enter"); }
+                source.Add(new Product() { Id = result, Name = model.Name, CreateDate = model.CreateDate, Locale = model.Locale });
 
-                else
-                {
-                    if (num==result) { source.Add(new Product() { Id = result, Name = model.Name, CreateDate = model.CreateDate, Locale = model.Locale }); }
-                    else { source.Add(new Product() { Id = result + 1, Name = model.Name, CreateDate = model.CreateDate, Locale = model.Locale }); }
-                }
                 return RedirectToAction("List", "Product");
 
             }
@@ -107,7 +97,7 @@ namespace ASP_NET_MVC_Q3.Controllers
 
         public ActionResult Edit(int id)
         {
-            Product model = new Product();
+            ProductViewModel model = new ProductViewModel();
             if (ModelState.IsValid)
             {
                 for (int i = 0; i < source.Count; i++)
@@ -131,69 +121,82 @@ namespace ASP_NET_MVC_Q3.Controllers
         [HttpPost]
         public ActionResult Edit(Product product)
         {
-            ProductViewModel viewModel = new ProductViewModel();
+            ProductViewModel model = new ProductViewModel();
             if (ModelState.IsValid)
             {
-                Product model = new Product();
+
                 model.Name = product.Name;
                 model.Locale = product.Locale;
                 model.UpdateDate = DateTime.Now;
 
 
-
                 source.RemoveAll(m => m.Id == product.Id);
-                source.Add(new Product() { Id = product.Id, Name = product.Name, UpdateDate = model.UpdateDate, CreateDate = product.CreateDate, Locale = model.Locale });
+                source.Add(new Product() { Id = product.Id, Name = model.Name, UpdateDate = model.UpdateDate, CreateDate = product.CreateDate, Locale = model.Locale });
                 source.Sort((x, y) => { return x.Id.CompareTo(y.Id); });
             }
             return RedirectToAction("List", "Product");
         }
 
 
-        public ActionResult Delete(Product product)
+        public ActionResult Delete(int? id)
         {
             Product model = new Product();
-            model.Name = product.Name;
-            model.Locale = product.Locale;
-            model.CreateDate = product.CreateDate;
-            model.UpdateDate = product.UpdateDate;
+            if (ModelState.IsValid)
+            {
+                for (int i = 0; i < source.Count; i++)
+                {
+                    if (source[i].Id == id)
+                    {
+                        model.Id = source[i].Id;
+                        model.Locale = source[i].Locale;
+                        model.Name = source[i].Name;
+                        model.CreateDate = source[i].CreateDate;
+                        model.UpdateDate = source[i].UpdateDate;
+                        ViewData["items"] = items;
 
+                        return View(model);
 
-            return View(model);
+                    }
+                }
+            }
+
+            return View("List");
         }
 
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            compare(id);
+            //  compare(id);
             source.RemoveAll(model => model.Id == id);
 
             return RedirectToAction("List", "Product");
         }
 
 
-        public int compare(int num)
-        {
+        //public int compare(int num)
+        //{
 
-            if (result == 0)
-            {
-                result = source[source.Count - 1].Id;
-                return result;
-            }
+        //    if (result == 0)
+        //    {
+        //        result = source[source.Count - 1].Id;
+        //        return result;
+        //    }
 
-            else
-            {
-                if (num < result)
-                {
-                    return result;
-                }
-                else
-                {
-                    result = num;
-                    return result;
-                }
-            }
-            
-        }
+        //    else
+        //    {
+        //        if (num < result)
+        //        {
+        //            return result;
+        //        }
+        //        else
+        //        {
+        //            result = num;
+        //            return result;
+        //        }
+        //    }
+
+
+        //}
 
     }
 }
