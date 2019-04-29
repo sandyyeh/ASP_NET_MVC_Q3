@@ -11,49 +11,23 @@ namespace ASP_NET_MVC_Q3.Controllers
 {
     public class ProductController : Controller
     {
-      //  public static int num;
-        public static int result;
+        public static int index;
 
         List<Product> source = Product.Data;
         List<SelectListItem> items = new List<SelectListItem>()
                 {
-                    new SelectListItem()
-                    {
-                        Text = "Unite State",
-                        Value = "US"
-                    },
-                    new SelectListItem()
-                    {
-                        Text = "Germany",
-                        Value = "DE"
-                    },
-                    new SelectListItem()
-                    {
-                        Text = "Canada",
-                        Value = "CA"
-                    },
-                    new SelectListItem()
-                    {
-                        Text = "Spain",
-                        Value = "ES"
-                    },
-                    new SelectListItem()
-                    {
-                        Text = "France",
-                        Value = "FR"
-                    },
-                    new SelectListItem()
-                    {
-                        Text = "Japan",
-                        Value = "JP"
-                    }
-
+                    new SelectListItem(){Text = "Unite State", Value = "US"},
+                    new SelectListItem(){Text = "Germany",Value = "DE"},
+                    new SelectListItem(){Text = "Canada",Value = "CA"},
+                    new SelectListItem(){Text = "Spain",Value = "ES"},
+                    new SelectListItem(){Text = "France",Value = "FR"},
+                    new SelectListItem(){Text = "Japan",Value = "JP"}
                 };
 
 
         public ActionResult Index()
         {
-            result = source[source.Count - 1].Id;
+            index = source[source.Count - 1].Id;
             return View();
         }
 
@@ -66,9 +40,12 @@ namespace ASP_NET_MVC_Q3.Controllers
 
         public ActionResult Create()
         {
+            ProductViewModel viewModel = new ProductViewModel()
+            {
+                LocaleListItem = items
+            };
 
-            ViewData["items"] = items;
-            return View();
+            return View(viewModel);
 
         }
 
@@ -77,126 +54,132 @@ namespace ASP_NET_MVC_Q3.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Product product)
         {
-            result++;
 
-            Product model = new Product();
             if (ModelState.IsValid)
             {
-                model.CreateDate = DateTime.Now;
-                model.Name = product.Name;
-                model.Locale = product.Locale;
-
-                source.Add(new Product() { Id = result, Name = model.Name, CreateDate = model.CreateDate, Locale = model.Locale });
-
+                CreateMethod(product);
                 return RedirectToAction("List", "Product");
 
-            }
-
-            return View();
-        }
-
-        public ActionResult Edit(int id)
-        {
-            ProductViewModel model = new ProductViewModel();
-            if (ModelState.IsValid)
-            {
-                for (int i = 0; i < source.Count; i++)
-                {
-                    if (source[i].Id == id)
-                    {
-                        model.Id = source[i].Id;
-                        model.Locale = source[i].Locale;
-                        model.Name = source[i].Name;
-                        ViewData["items"] = items;
-
-                        return View(model);
-
-                    }
-                }
-            }
-            return View();
-
-        }
-
-        [HttpPost]
-        public ActionResult Edit(Product product)
-        {
-            ProductViewModel model = new ProductViewModel();
-            if (ModelState.IsValid)
-            {
-
-                model.Name = product.Name;
-                model.Locale = product.Locale;
-                model.UpdateDate = DateTime.Now;
-
-
-                source.RemoveAll(m => m.Id == product.Id);
-                source.Add(new Product() { Id = product.Id, Name = model.Name, UpdateDate = model.UpdateDate, CreateDate = product.CreateDate, Locale = model.Locale });
-                source.Sort((x, y) => { return x.Id.CompareTo(y.Id); });
-            }
-            return RedirectToAction("List", "Product");
-        }
-
-
-        public ActionResult Delete(int? id)
-        {
-            Product model = new Product();
-            if (ModelState.IsValid)
-            {
-                for (int i = 0; i < source.Count; i++)
-                {
-                    if (source[i].Id == id)
-                    {
-                        model.Id = source[i].Id;
-                        model.Locale = source[i].Locale;
-                        model.Name = source[i].Name;
-                        model.CreateDate = source[i].CreateDate;
-                        model.UpdateDate = source[i].UpdateDate;
-                        ViewData["items"] = items;
-
-                        return View(model);
-
-                    }
-                }
             }
 
             return View("List");
         }
 
-        [HttpPost]
-        public ActionResult Delete(int id)
+        public ActionResult Edit(int Id)
         {
-            //  compare(id);
-            source.RemoveAll(model => model.Id == id);
 
+            if (ModelState.IsValid)
+            {
+                return View(ReadMethod(Id));
+            }
+
+            return View("List");
+
+        }
+
+        [HttpPost]
+        public ActionResult Edit(ProductViewModel productViewModel)
+        {
+
+            if (ModelState.IsValid)
+            {
+                EditMethod(productViewModel);
+
+            }
             return RedirectToAction("List", "Product");
         }
 
 
-        //public int compare(int num)
+        //public ActionResult Delete(int? id)
         //{
-
-        //    if (result == 0)
+        //    Product model = new Product();
+        //    if (ModelState.IsValid)
         //    {
-        //        result = source[source.Count - 1].Id;
-        //        return result;
+        //        for (int i = 0; i < source.Count; i++)
+        //        {
+        //            if (source[i].Id == id)
+        //            {
+
+        //                model.Locale = source[i].Locale;
+        //                model.Name = source[i].Name;
+        //                model.CreateDate = source[i].CreateDate;
+        //                model.UpdateDate = source[i].UpdateDate;
+
+
+        //                return View(model);
+
+
+        //            }
+        //        }
         //    }
 
-        //    else
-        //    {
-        //        if (num < result)
-        //        {
-        //            return result;
-        //        }
-        //        else
-        //        {
-        //            result = num;
-        //            return result;
-        //        }
-        //    }
-
-
+        //    return View("List");
         //}
+
+        [HttpPost]
+        public ActionResult Delete(int Id)
+        {
+            if (ModelState.IsValid)
+            {
+                DeleteMethod(Id);
+            }
+        
+            return RedirectToAction("List", "Product");
+        }
+
+
+        
+
+        public Product CreateMethod(Product product)
+        {
+            index++;
+
+            ProductViewModel viewModel = new ProductViewModel();       
+            viewModel.Name = product.Name;
+            viewModel.Locale = product.Locale;
+            viewModel.CreateDate = DateTime.Now;
+
+            source.Add(new Product() { Id = index, Name = viewModel.Name, CreateDate = viewModel.CreateDate, Locale = viewModel.Locale });
+
+            return product;
+        }
+
+        public ProductViewModel ReadMethod(int Id)
+        {
+            ProductViewModel viewModel = new ProductViewModel();
+            for (int i = 0; i < source.Count; i++)
+            {
+                if (source[i].Id == Id)
+                {
+                    viewModel.Locale = source[i].Locale;
+                    viewModel.Name = source[i].Name;
+                    viewModel.LocaleListItem = items;
+                    
+                    return viewModel;
+                }
+            }
+            return viewModel;
+        }
+
+        public ProductViewModel EditMethod(ProductViewModel productViewModel)
+        {
+            var newValue = source.Where(m => m.Id == productViewModel.Id).FirstOrDefault();
+            if (newValue != null)
+            {
+                newValue.Name = productViewModel.Name;
+                newValue.Locale = productViewModel.Locale;
+                newValue.UpdateDate = DateTime.Now;
+
+            }
+            return productViewModel;           
+
+        }
+
+        public int DeleteMethod(int Id)
+        {
+            source.RemoveAll(model => model.Id == Id);
+            return Id;
+        }
 
     }
 }

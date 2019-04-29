@@ -16,10 +16,16 @@ namespace ASP_NET_MVC_Q3.ViewModel
         [Required]
         public string Locale { get; set; }
 
+        public DateTime CreateDate { get; set; }
+
         public DateTime UpdateDate { get; set; }
 
-        public List<SelectListItem> LocaleListItem { get; set; }
+        public IEnumerable<SelectListItem> LocaleListItem { get; set; }
     }
 
-    
+
+
+   
 }
+
+    

@@ -52,9 +52,18 @@
                         <td>@item.Name</td>
                         <td>@item.Locale</td>
                         <td>@String.Format("{0:yyyy/MM/dd HH:mm:ss}", @item.CreateDate)</td>
-                        <td>@String.Format("{0:yyyy/MM/dd HH:mm:ss}", @item.UpdateDate)</td>                      
+                        <td>@String.Format("{0:yyyy/MM/dd HH:mm:ss}", @item.UpdateDate)</td>
                         <td>@Html.ActionLink("Edit", "Edit", new { id = item.Id }) </td>
-                        <td> @Html.ActionLink("Delete", "Delete", new { id = item.Id })</td>
+                        <td>
+                            @using (Html.BeginForm("Delete", "Product", FormMethod.Post, new { @class = "Delete" }))
+                            {
+                                @Html.Hidden("id", item.Id)
+                                <input type="submit" value="Delete" name="Delete" class="btn btn-link" />
+
+
+                            }
+                        </td>
+                        @*<td> @Html.ActionLink("Delete", "Delete", new { id = item.Id })</td>*@
                     </tr>
                 }
             }
