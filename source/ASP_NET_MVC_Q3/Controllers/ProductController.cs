@@ -40,6 +40,7 @@ namespace ASP_NET_MVC_Q3.Controllers
 
         public ActionResult Create()
         {
+     
             ProductViewModel viewModel = new ProductViewModel()
             {
                 LocaleListItem = items
@@ -65,12 +66,12 @@ namespace ASP_NET_MVC_Q3.Controllers
             return View("List");
         }
 
-        public ActionResult Edit(int Id)
+        public ActionResult Edit(int id)
         {
 
             if (ModelState.IsValid)
             {
-                return View(ReadMethod(Id));
+                return View(ReadMethod(id));
             }
 
             return View("List");
@@ -117,11 +118,11 @@ namespace ASP_NET_MVC_Q3.Controllers
         //}
 
         [HttpPost]
-        public ActionResult Delete(int Id)
+        public ActionResult Delete(int id)
         {
             if (ModelState.IsValid)
             {
-                DeleteMethod(Id);
+                DeleteMethod(id);
             }
         
             return RedirectToAction("List", "Product");
@@ -144,12 +145,12 @@ namespace ASP_NET_MVC_Q3.Controllers
             return product;
         }
 
-        public ProductViewModel ReadMethod(int Id)
+        public ProductViewModel ReadMethod(int id)
         {
             ProductViewModel viewModel = new ProductViewModel();
             for (int i = 0; i < source.Count; i++)
             {
-                if (source[i].Id == Id)
+                if (source[i].Id == id)
                 {
                     viewModel.Locale = source[i].Locale;
                     viewModel.Name = source[i].Name;
@@ -175,10 +176,10 @@ namespace ASP_NET_MVC_Q3.Controllers
 
         }
 
-        public int DeleteMethod(int Id)
+        public int DeleteMethod(int id)
         {
-            source.RemoveAll(model => model.Id == Id);
-            return Id;
+            source.RemoveAll(model => model.Id == id);
+            return id;
         }
 
     }

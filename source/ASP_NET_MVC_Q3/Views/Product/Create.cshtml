@@ -25,9 +25,9 @@
         <div class="form-group">
             @Html.LabelFor(model => model.LocaleListItem, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(m => m.Locale, Model.LocaleListItem, new { @class = "form-control"})
-                @*@Html.DropDownListFor(model => model.LocaleListItem, ViewData["items"] as IEnumerable<SelectListItem>            , "請選擇", new { @class = "form-control" })*@
-                    @Html.ValidationMessageFor(model => model.LocaleListItem, "", new { @class = "text-danger" })
+                @Html.DropDownListFor(m => m.Locale, Model.LocaleListItem, new { @class = "form-control" })
+                @*@Html.DropDownListFor(model => model.LocaleListItem, ViewData["items"] as IEnumerable<SelectListItem>, "請選擇", new { @class = "form-control" })*@
+                @Html.ValidationMessageFor(model => model.LocaleListItem, "", new { @class = "text-danger" })
             </div>
         </div>
 
