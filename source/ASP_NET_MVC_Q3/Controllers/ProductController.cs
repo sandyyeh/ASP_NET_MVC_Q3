@@ -40,7 +40,12 @@ namespace ASP_NET_MVC_Q3.Controllers
 
         public ActionResult Create()
         {
-     
+
+            if (source == Product.Data && source.Count != 0)
+            {
+                index = source[source.Count - 1].Id;
+            }
+
             ProductViewModel viewModel = new ProductViewModel()
             {
                 LocaleListItem = items
@@ -124,18 +129,18 @@ namespace ASP_NET_MVC_Q3.Controllers
             {
                 DeleteMethod(id);
             }
-        
+
             return RedirectToAction("List", "Product");
         }
 
 
-        
+
 
         public Product CreateMethod(Product product)
         {
             index++;
 
-            ProductViewModel viewModel = new ProductViewModel();       
+            ProductViewModel viewModel = new ProductViewModel();
             viewModel.Name = product.Name;
             viewModel.Locale = product.Locale;
             viewModel.CreateDate = DateTime.Now;
@@ -155,7 +160,7 @@ namespace ASP_NET_MVC_Q3.Controllers
                     viewModel.Locale = source[i].Locale;
                     viewModel.Name = source[i].Name;
                     viewModel.LocaleListItem = items;
-                    
+
                     return viewModel;
                 }
             }
@@ -172,7 +177,7 @@ namespace ASP_NET_MVC_Q3.Controllers
                 newValue.UpdateDate = DateTime.Now;
 
             }
-            return productViewModel;           
+            return productViewModel;
 
         }
 
