@@ -1,18 +1,15 @@
 ﻿using ASP_NET_MVC_Q3.Data;
+using ASP_NET_MVC_Q3.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using ASP_NET_MVC_Q3.ViewModel;
 
 namespace ASP_NET_MVC_Q3.Controllers
 {
     public class ProductController : Controller
     {
-        public static int index;
-
+        public static int Num;
         List<Product> source = Product.Data;
         List<SelectListItem> items = new List<SelectListItem>()
                 {
@@ -24,10 +21,16 @@ namespace ASP_NET_MVC_Q3.Controllers
                     new SelectListItem(){Text = "Japan",Value = "JP"}
                 };
 
+        CRUD crud = new CRUD();
 
         public ActionResult Index()
         {
-            index = source[source.Count - 1].Id;
+            if (source.Count!=0)
+            {
+                Num = source[source.Count - 1].Id;
+                crud.GetIndex(Num);
+            }
+           
             return View();
         }
 
@@ -40,12 +43,7 @@ namespace ASP_NET_MVC_Q3.Controllers
 
         public ActionResult Create()
         {
-
-            if (source == Product.Data && source.Count != 0)
-            {
-                index = source[source.Count - 1].Id;
-            }
-
+            
             ProductViewModel viewModel = new ProductViewModel()
             {
                 LocaleListItem = items
@@ -63,7 +61,7 @@ namespace ASP_NET_MVC_Q3.Controllers
 
             if (ModelState.IsValid)
             {
-                CreateMethod(product);
+                crud.CreateMethod(product);
                 return RedirectToAction("List", "Product");
 
             }
@@ -76,11 +74,10 @@ namespace ASP_NET_MVC_Q3.Controllers
 
             if (ModelState.IsValid)
             {
-                return View(ReadMethod(id));
+                return View(crud.ReadMethod(id));
             }
 
             return View("List");
-
         }
 
         [HttpPost]
@@ -89,63 +86,58 @@ namespace ASP_NET_MVC_Q3.Controllers
 
             if (ModelState.IsValid)
             {
-                EditMethod(productViewModel);
+                crud.EditMethod(productViewModel);
 
             }
             return RedirectToAction("List", "Product");
         }
 
-
-        //public ActionResult Delete(int? id)
-        //{
-        //    Product model = new Product();
-        //    if (ModelState.IsValid)
-        //    {
-        //        for (int i = 0; i < source.Count; i++)
-        //        {
-        //            if (source[i].Id == id)
-        //            {
-
-        //                model.Locale = source[i].Locale;
-        //                model.Name = source[i].Name;
-        //                model.CreateDate = source[i].CreateDate;
-        //                model.UpdateDate = source[i].UpdateDate;
-
-
-        //                return View(model);
-
-
-        //            }
-        //        }
-        //    }
-
-        //    return View("List");
-        //}
 
         [HttpPost]
         public ActionResult Delete(int id)
         {
             if (ModelState.IsValid)
             {
-                DeleteMethod(id);
+                crud.DeleteMethod(id);
             }
 
             return RedirectToAction("List", "Product");
         }
 
+    }
 
 
+    public class CRUD
+    {
+        public static int Index;
+        List<Product> source = Product.Data;
+        List<SelectListItem> items = new List<SelectListItem>()
+                {
+                    new SelectListItem(){Text = "Unite State", Value = "US"},
+                    new SelectListItem(){Text = "Germany",Value = "DE"},
+                    new SelectListItem(){Text = "Canada",Value = "CA"},
+                    new SelectListItem(){Text = "Spain",Value = "ES"},
+                    new SelectListItem(){Text = "France",Value = "FR"},
+                    new SelectListItem(){Text = "Japan",Value = "JP"}
+                };
+
+
+        public int GetIndex(int num)
+        {
+            Index = num;
+            return Index;
+        }
 
         public Product CreateMethod(Product product)
         {
-            index++;
+            Index++;
 
             ProductViewModel viewModel = new ProductViewModel();
             viewModel.Name = product.Name;
             viewModel.Locale = product.Locale;
             viewModel.CreateDate = DateTime.Now;
 
-            source.Add(new Product() { Id = index, Name = viewModel.Name, CreateDate = viewModel.CreateDate, Locale = viewModel.Locale });
+            source.Add(new Product() { Id = Index, Name = viewModel.Name, CreateDate = viewModel.CreateDate, Locale = viewModel.Locale });
 
             return product;
         }
