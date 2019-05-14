@@ -1,4 +1,5 @@
 ﻿using ASP_NET_MVC_Q3.Data;
+using ASP_NET_MVC_Q3.Infrastructure;
 using ASP_NET_MVC_Q3.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,12 @@ namespace ASP_NET_MVC_Q3.Controllers
 {
     public class ProductController : Controller
     {
+        private IProductRepository productRepository;
+        public ProductController()
+        {
+            this.productRepository = new ProductRepository();
+        }
+
         public static int Num;
         List<Product> source = Product.Data;
         List<SelectListItem> items = new List<SelectListItem>()
@@ -20,37 +27,35 @@ namespace ASP_NET_MVC_Q3.Controllers
                     new SelectListItem(){Text = "France",Value = "FR"},
                     new SelectListItem(){Text = "Japan",Value = "JP"}
                 };
-
-        CRUD crud = new CRUD();
-
+        
+        
         public ActionResult Index()
         {
-            if (source.Count!=0)
+
+            if (source.Count != 0)
             {
                 Num = source[source.Count - 1].Id;
-                crud.GetIndex(Num);
+                var model = productRepository.GetIndex(Num);         
             }
-           
+
             return View();
         }
 
         public ActionResult List(Product product)
         {
-
             return View(source);
         }
 
 
         public ActionResult Create()
         {
-            
+
             ProductViewModel viewModel = new ProductViewModel()
             {
                 LocaleListItem = items
             };
 
             return View(viewModel);
-
         }
 
 
@@ -61,33 +66,32 @@ namespace ASP_NET_MVC_Q3.Controllers
 
             if (ModelState.IsValid)
             {
-                crud.CreateMethod(product);
+                var model = productRepository.Create(product);         
                 return RedirectToAction("List", "Product");
-
             }
 
             return View("List");
         }
 
-        public ActionResult Edit(int id)
+        public ActionResult Update(int id)
         {
 
             if (ModelState.IsValid)
             {
-                return View(crud.ReadMethod(id));
+                var model = productRepository.Get(id);    
+                return View(model);
             }
 
             return View("List");
         }
 
         [HttpPost]
-        public ActionResult Edit(ProductViewModel productViewModel)
+        public ActionResult Update(ProductViewModel productViewModel)
         {
 
             if (ModelState.IsValid)
             {
-                crud.EditMethod(productViewModel);
-
+                var model = productRepository.Update(productViewModel);
             }
             return RedirectToAction("List", "Product");
         }
@@ -96,88 +100,15 @@ namespace ASP_NET_MVC_Q3.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
+
             if (ModelState.IsValid)
             {
-                crud.DeleteMethod(id);
+                var model = productRepository.Delete(id);
             }
 
             return RedirectToAction("List", "Product");
         }
 
-    }
-
-
-    public class CRUD
-    {
-        public static int Index;
-        List<Product> source = Product.Data;
-        List<SelectListItem> items = new List<SelectListItem>()
-                {
-                    new SelectListItem(){Text = "Unite State", Value = "US"},
-                    new SelectListItem(){Text = "Germany",Value = "DE"},
-                    new SelectListItem(){Text = "Canada",Value = "CA"},
-                    new SelectListItem(){Text = "Spain",Value = "ES"},
-                    new SelectListItem(){Text = "France",Value = "FR"},
-                    new SelectListItem(){Text = "Japan",Value = "JP"}
-                };
-
-
-        public int GetIndex(int num)
-        {
-            Index = num;
-            return Index;
-        }
-
-        public Product CreateMethod(Product product)
-        {
-            Index++;
-
-            ProductViewModel viewModel = new ProductViewModel();
-            viewModel.Name = product.Name;
-            viewModel.Locale = product.Locale;
-            viewModel.CreateDate = DateTime.Now;
-
-            source.Add(new Product() { Id = Index, Name = viewModel.Name, CreateDate = viewModel.CreateDate, Locale = viewModel.Locale });
-
-            return product;
-        }
-
-        public ProductViewModel ReadMethod(int id)
-        {
-            ProductViewModel viewModel = new ProductViewModel();
-            for (int i = 0; i < source.Count; i++)
-            {
-                if (source[i].Id == id)
-                {
-                    viewModel.Locale = source[i].Locale;
-                    viewModel.Name = source[i].Name;
-                    viewModel.LocaleListItem = items;
-
-                    return viewModel;
-                }
-            }
-            return viewModel;
-        }
-
-        public ProductViewModel EditMethod(ProductViewModel productViewModel)
-        {
-            var newValue = source.Where(m => m.Id == productViewModel.Id).FirstOrDefault();
-            if (newValue != null)
-            {
-                newValue.Name = productViewModel.Name;
-                newValue.Locale = productViewModel.Locale;
-                newValue.UpdateDate = DateTime.Now;
-
-            }
-            return productViewModel;
-
-        }
-
-        public int DeleteMethod(int id)
-        {
-            source.RemoveAll(model => model.Id == id);
-            return id;
-        }
 
     }
 }
