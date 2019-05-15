@@ -10,14 +10,13 @@ namespace ASP_NET_MVC_Q3.Controllers
 {
     public class ProductController : Controller
     {
-        private IProductRepository productRepository;
+        private IProductRepository _productRepository;
         public ProductController()
         {
-            this.productRepository = new ProductRepository();
+            this._productRepository = new ProductRepository();
         }
 
-        public static int Num;
-        List<Product> source = Product.Data;
+
         List<SelectListItem> items = new List<SelectListItem>()
                 {
                     new SelectListItem(){Text = "Unite State", Value = "US"},
@@ -27,23 +26,18 @@ namespace ASP_NET_MVC_Q3.Controllers
                     new SelectListItem(){Text = "France",Value = "FR"},
                     new SelectListItem(){Text = "Japan",Value = "JP"}
                 };
-        
-        
+
+
         public ActionResult Index()
         {
-
-            if (source.Count != 0)
-            {
-                Num = source[source.Count - 1].Id;
-                var model = productRepository.GetIndex(Num);         
-            }
 
             return View();
         }
 
-        public ActionResult List(Product product)
+        public ActionResult List()
         {
-            return View(source);
+            var list = _productRepository.GetAll();
+            return View(list);
         }
 
 
@@ -66,7 +60,7 @@ namespace ASP_NET_MVC_Q3.Controllers
 
             if (ModelState.IsValid)
             {
-                var model = productRepository.Create(product);         
+                _productRepository.Create(product);
                 return RedirectToAction("List", "Product");
             }
 
@@ -75,23 +69,28 @@ namespace ASP_NET_MVC_Q3.Controllers
 
         public ActionResult Update(int id)
         {
+            ProductViewModel viewModel = new ProductViewModel();
 
             if (ModelState.IsValid)
             {
-                var model = productRepository.Get(id);    
-                return View(model);
+                var product = _productRepository.GetDetail(id);
+
+                viewModel.Name =product.Name;
+                viewModel.Locale = product.Locale;
+                viewModel.LocaleListItem = items;
+                return View(viewModel);
             }
 
             return View("List");
         }
 
         [HttpPost]
-        public ActionResult Update(ProductViewModel productViewModel)
+        public ActionResult Update(Product product)
         {
 
             if (ModelState.IsValid)
             {
-                var model = productRepository.Update(productViewModel);
+                _productRepository.Update(product);
             }
             return RedirectToAction("List", "Product");
         }
@@ -103,7 +102,7 @@ namespace ASP_NET_MVC_Q3.Controllers
 
             if (ModelState.IsValid)
             {
-                var model = productRepository.Delete(id);
+                _productRepository.Delete(id);
             }
 
             return RedirectToAction("List", "Product");

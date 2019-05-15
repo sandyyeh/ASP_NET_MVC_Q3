@@ -9,15 +9,16 @@ using System.Threading.Tasks;
 namespace ASP_NET_MVC_Q3.Infrastructure
 {
     public interface IProductRepository
-    {
-        Product Create(Product product);
+    {     
+        void Create(Product product);
 
-        ProductViewModel Update(ProductViewModel productViewModel);
+        void Update(Product product);
 
-        int Delete(int id);
+        void Delete(int id);
 
-        ProductViewModel Get(int categoryID);
+        Product GetDetail(int id);
 
-        int GetIndex(int num);
+        IEnumerable<Product> GetAll();
+
     }
 }
